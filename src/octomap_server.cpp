@@ -938,7 +938,7 @@ namespace octomap_server {
             // maybe a filtering based on the surface normals might be more robust / accurate?
             seg.setModelType(pcl::SACMODEL_PERPENDICULAR_PLANE);
             seg.setMethodType(pcl::SAC_RANSAC);
-            seg.setMaxIterations(200);
+            seg.setMaxIterations(1);
             seg.setDistanceThreshold (m_groundFilterDistance);
             seg.setAxis(Eigen::Vector3f(0, 0, 1));
             seg.setEpsAngle(m_groundFilterAngle);
