@@ -7,6 +7,7 @@ namespace octomap_server {
         const std::string node_name):
         Node(node_name, options),
         m_octree(NULL),
+        m_minRange(1.0),
         m_maxRange(20),
         m_worldFrameId("/map"),
         m_baseFrameId("base_footprint"),
@@ -81,6 +82,8 @@ namespace octomap_server {
         m_groundFilterPlaneDistance = this->declare_parameter(
             "ground_filter/plane_distance", m_groundFilterPlaneDistance);
 
+        m_minRange = this->declare_parameter(
+            "sensor_model/min_range", m_minRange);
         m_maxRange = this->declare_parameter(
             "sensor_model/max_range", m_maxRange);
 
@@ -437,7 +440,7 @@ namespace octomap_server {
         for (auto it = nonground.begin(); it != nonground.end(); ++it) {
             octomap::point3d point(it->x, it->y, it->z);
             // maxrange check            
-            if ((m_maxRange < 0.0) || ((point - sensorOrigin).norm() <= m_maxRange)) {
+            if (((m_maxRange < 0.0) || ((point - sensorOrigin).norm() <= m_maxRange)) && ((point - sensorOrigin).norm() >= m_minRange)) {
                 // free cells
                 if (m_octree->computeRayKeys(sensorOrigin, point, m_keyRay)) {
                     free_cells.insert(m_keyRay.begin(), m_keyRay.end());
